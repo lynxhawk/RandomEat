@@ -17,7 +17,7 @@
         :disabled="shops.length === 0"
         color="linear-gradient(to right, #003366, #663399, #ff66cc, #ff9933)"
         text="随机选择店铺/摇一摇"
-		class="random-button"
+        class="random-button"
       ></u-button>
     </view>
 
@@ -27,17 +27,21 @@
           style="width: 70%"
           v-model="newShop"
           placeholder="请输入店铺名称"
-		  placeholderStyle="color: #22de9c"
-		  border="bottom"
-		  color="#22de9c"
+          placeholderStyle="color: #22de9c"
+          border="bottom"
+          color="#22de9c"
+		  borderColor="#22de9c"
         ></u-input>
       </u-form-item>
       <u-button
-        :plain="true"
-        :hairline="true"
         text="添加店铺"
         @click="addShop"
-        style="width: 30%"
+        style="
+          width: 30%;
+          color: #22de9c;
+          background-color: #372963;
+          border-color: #22de9c;
+        "
       ></u-button>
     </u-form>
 
@@ -159,12 +163,13 @@ export default {
 .result-text {
   color: #22de9c;
   font-size: 40px;
-  margin-top: 50px;
+  margin-top: 100px;
 }
 
 .form-row {
   display: flex;
   align-items: center;
+  margin-top: 10px;
 }
 
 .form-row .u-form-item {
