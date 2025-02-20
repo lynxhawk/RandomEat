@@ -1,0 +1,1 @@
+<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}">跳转测试页面</view>

@@ -1,0 +1,13 @@
+
+.container {
+	padding: 20px;
+}
+.result {
+	text-align: center;
+	padding: 20px 0;
+	font-size: 20px;
+}
+.shop-list {
+	margin-top: 20px;
+}
+
