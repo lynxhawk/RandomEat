@@ -1,12 +1,14 @@
 {
   "navigationBarTitleText": "今天吃什么",
   "usingComponents": {
+    "u-divider": "/uni_modules/uview-ui/components/u-divider/u-divider",
     "u-button": "/uni_modules/uview-ui/components/u-button/u-button",
     "u-form": "/uni_modules/uview-ui/components/u-form/u-form",
     "u-form-item": "/uni_modules/uview-ui/components/u-form-item/u-form-item",
     "u-input": "/uni_modules/uview-ui/components/u-input/u-input",
     "u-grid": "/uni_modules/uview-ui/components/u-grid/u-grid",
     "u-grid-item": "/uni_modules/uview-ui/components/u-grid-item/u-grid-item",
-    "u-tag": "/uni_modules/uview-ui/components/u-tag/u-tag"
+    "u-tag": "/uni_modules/uview-ui/components/u-tag/u-tag",
+    "u-link": "/uni_modules/uview-ui/components/u-link/u-link"
   }
 }

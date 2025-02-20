@@ -100,6 +100,9 @@ __webpack_require__.r(__webpack_exports__);
 var components
 try {
   components = {
+    uDivider: function () {
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-divider/u-divider */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-divider/u-divider")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-divider/u-divider.vue */ 1043))
+    },
     uButton: function () {
       return Promise.all(/*! import() | uni_modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-button/u-button.vue */ 969))
     },
@@ -120,6 +123,9 @@ try {
     },
     uTag: function () {
       return Promise.all(/*! import() | uni_modules/uview-ui/components/u-tag/u-tag */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-tag/u-tag")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-tag/u-tag.vue */ 932))
+    },
+    uLink: function () {
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-link/u-link */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-link/u-link")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-link/u-link.vue */ 961))
     },
   }
 } catch (e) {
@@ -218,12 +224,55 @@ exports.default = void 0;
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
       shops: [],
-      newShop: '',
-      selectedShop: '',
+      newShop: "",
+      selectedShop: "",
       shakeThreshold: 15,
       // 摇一摇阈值,可根据需要调整
       lastShakeTime: 0 // 上次摇一摇的时间戳
@@ -231,7 +280,7 @@ var _default = {
   },
   onLoad: function onLoad() {
     // 页面加载时从本地存储读取店铺数据
-    var shops = uni.getStorageSync('shops');
+    var shops = uni.getStorageSync("shops");
     if (shops) {
       this.shops = JSON.parse(shops);
     }
@@ -257,15 +306,15 @@ var _default = {
     addShop: function addShop() {
       if (this.newShop) {
         this.shops.push(this.newShop);
-        this.newShop = '';
+        this.newShop = "";
         // 将店铺数据存储到本地
-        uni.setStorageSync('shops', JSON.stringify(this.shops));
+        uni.setStorageSync("shops", JSON.stringify(this.shops));
       }
     },
     removeShop: function removeShop(index) {
       this.shops.splice(index, 1);
       // 更新本地存储的店铺数据
-      uni.setStorageSync('shops', JSON.stringify(this.shops));
+      uni.setStorageSync("shops", JSON.stringify(this.shops));
     },
     pickShop: function pickShop() {
       if (this.shops.length > 0) {

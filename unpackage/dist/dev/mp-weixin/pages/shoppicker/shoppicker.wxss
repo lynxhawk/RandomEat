@@ -1,13 +1,47 @@
 
 .container {
-	padding: 20px;
+  padding: 0px 20px;
+  background-color: #372963;
+  height: 100vh;
+}
+.result-block {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
 }
 .result {
-	text-align: center;
-	padding: 20px 0;
-	font-size: 20px;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
+  height: 200px;
+  flex: 1;
 }
-.shop-list {
-	margin-top: 20px;
+.random-button {
+  margin-top: auto;
+}
+.result-text {
+  color: #22de9c;
+  font-size: 40px;
+  margin-top: 50px;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+}
+.form-row .u-form-item {
+  flex: 1;
+  margin-right: 10px;
+}
+.shoptag {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.link-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  text-align: center;
 }
 
