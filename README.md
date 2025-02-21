@@ -1,2 +1,2 @@
 # RandomEat
-### Struggling with the daily dilemma of 'What to eat?' This WeChat mini-program, built with Vue2 and uView2.0, is your ultimate food selection tool! Effortlessly add your favorite shops and use the random selection feature to quickly overcome decision fatigue. For an extra touch of fun, it also supports a 'shake' function, delivering surprising meal suggestions with a simple shake of your phone! Say goodbye to indecision and make food choices easy and enjoyable.
+This WeChat mini-program, built with Vue2 and uView2.0. Effortlessly add your favorite shops and use the random selection feature to quickly overcome decision fatigue.
