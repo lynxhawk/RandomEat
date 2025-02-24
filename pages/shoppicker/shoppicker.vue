@@ -161,7 +161,10 @@ export default {
 .container {
   padding: 0px 20px;
   background-color: #372963;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
+  position: relative;
+  padding-bottom: 40px;
 }
 
 .result-block {
@@ -221,9 +224,15 @@ export default {
 }
 
 .shop-list {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   padding: 20rpx 0rpx;
+  margin-bottom: 20px;
+  /* 设置最大高度并添加滚动 */
+  max-height: calc(50vh - 40px);
+  min-height: 100rpx;
+  overflow-y: auto;
 }
 
 .shop-item {
@@ -258,10 +267,12 @@ export default {
 }
 
 .link-container {
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  /* 确保在其他内容之上 */
+  z-index: 1;
 }
 </style>
