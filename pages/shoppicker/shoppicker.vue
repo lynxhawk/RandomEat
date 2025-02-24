@@ -14,7 +14,7 @@
       <u-button
         size="large"
         @click="pickShop"
-        :disabled="shops.length === 0"
+        :disabled="getCurrentShops().length === 0"
         color="linear-gradient(to right, #003366, #663399, #ff66cc, #ff9933)"
         text="随机选择店铺/摇一摇"
         class="random-button"
@@ -30,7 +30,7 @@
           placeholderStyle="color: #22de9c"
           border="bottom"
           color="#22de9c"
-		  borderColor="#22de9c"
+          borderColor="#22de9c"
         ></u-input>
       </u-form-item>
       <u-button
@@ -45,21 +45,27 @@
       ></u-button>
     </u-form>
 
+    <view class="tabs">
+      <view
+        v-for="(tab, index) in tabList"
+        :key="index"
+        class="tab-item"
+        :class="{ active: currentTab === index }"
+        @tap="tabChange(index)"
+      >
+        {{ tab.name }}
+      </view>
+    </view>
+
     <view class="shop-list">
-      <u-grid :border="false" col="2">
-        <u-grid-item v-for="(shop, index) in shops" :key="index">
-          <u-tag
-            color="#61AFEF"
-            size="large"
-            closeColor="#000000"
-            :text="shop"
-            closable
-            @close="removeShop(index)"
-            plain
-            class="shoptag"
-          ></u-tag>
-        </u-grid-item>
-      </u-grid>
+      <view
+        v-for="(shop, index) in getCurrentShops()"
+        :key="index"
+        class="shop-item"
+      >
+        <view class="shop-name">{{ shop }}</view>
+        <view class="remove-btn" @tap="removeShop(index)">×</view>
+      </view>
     </view>
     <view class="link-container">
       <u-link
@@ -76,7 +82,12 @@
 export default {
   data() {
     return {
-      shops: [],
+      tabList: [{ name: "美食餐饮" }, { name: "奶茶甜品" }],
+      currentTab: 0,
+      shops: {
+        food: [],
+        dessert: [],
+      },
       newShop: "",
       selectedShop: "",
       shakeThreshold: 15, // 摇一摇阈值,可根据需要调整
@@ -84,52 +95,63 @@ export default {
     };
   },
   onLoad() {
-    // 页面加载时从本地存储读取店铺数据
     const shops = uni.getStorageSync("shops");
     if (shops) {
       this.shops = JSON.parse(shops);
     }
   },
   onShow() {
-    // 在 onShow 生命周期函数中开启加速度监听
     wx.onAccelerometerChange(this.onAccelerometerChange);
   },
   onHide() {
-    // 在 onHide 生命周期函数中关闭加速度监听
     wx.offAccelerometerChange(this.onAccelerometerChange);
   },
+  // 移除 watch 选项
   methods: {
+    getCurrentShops() {
+      return this.currentTab === 0 ? this.shops.food : this.shops.dessert;
+    },
+    tabChange(index) {
+      this.currentTab = index;
+      console.log(index);
+      console.log(this.shops.food);
+      console.log(this.shops.dessert);
+    },
     onAccelerometerChange(res) {
       const currentTime = Date.now();
       if (
-        currentTime - this.lastShakeTime > 1000 && // 限制1秒内只能触发一次
+        currentTime - this.lastShakeTime > 1000 &&
         (Math.abs(res.x) > this.shakeThreshold ||
           Math.abs(res.y) > this.shakeThreshold ||
           Math.abs(res.z) > this.shakeThreshold)
       ) {
         this.lastShakeTime = currentTime;
+
         this.pickShop();
       }
     },
     addShop() {
       if (this.newShop) {
-        this.shops.push(this.newShop);
+        this.getCurrentShops().push(this.newShop);
         this.newShop = "";
-        // 将店铺数据存储到本地
-        uni.setStorageSync("shops", JSON.stringify(this.shops));
+        this.saveShops();
       }
     },
     removeShop(index) {
-      this.shops.splice(index, 1);
-      // 更新本地存储的店铺数据
-      uni.setStorageSync("shops", JSON.stringify(this.shops));
+      const currentShops = this.getCurrentShops();
+      currentShops.splice(index, 1);
+      this.saveShops();
     },
     pickShop() {
-      if (this.shops.length > 0) {
-        let randomIndex = Math.floor(Math.random() * this.shops.length);
-        this.selectedShop = this.shops[randomIndex];
-        wx.vibrateShort(); // 触发短震动
+      const currentShops = this.getCurrentShops();
+      if (currentShops.length > 0) {
+        let randomIndex = Math.floor(Math.random() * currentShops.length);
+        this.selectedShop = currentShops[randomIndex];
+        wx.vibrateShort();
       }
+    },
+    saveShops() {
+      uni.setStorageSync("shops", JSON.stringify(this.shops));
     },
   },
 };
@@ -177,10 +199,64 @@ export default {
   margin-right: 10px;
 }
 
-.shoptag {
-  margin-right: 10px;
-  margin-bottom: 10px;
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80rpx;
+  background-color: #372963;
 }
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+}
+
+.tab-item.active {
+  color: #22de9c;
+  border-bottom: 4rpx solid #22de9c;
+}
+
+.shop-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20rpx 0rpx;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  margin: 10rpx;
+  border: 1px solid #22de9c;
+  border-radius: 5rpx;
+  background-color: transparent;
+  flex-basis: 100rpx;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.shop-name {
+  color: #22de9c;
+  font-size: 28rpx;
+  margin-right: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-btn {
+  color: #ffffff;
+  font-size: 24rpx;
+  padding: 5rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .link-container {
   position: fixed;
   bottom: 20px;

@@ -33,9 +33,56 @@
   flex: 1;
   margin-right: 10px;
 }
-.shoptag {
-  margin-right: 10px;
-  margin-bottom: 10px;
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80rpx;
+  background-color: #372963;
+}
+.tab-item {
+  flex: 1;
+  text-align: center;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+}
+.tab-item.active {
+  color: #22de9c;
+  border-bottom: 4rpx solid #22de9c;
+}
+.shop-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20rpx 0rpx;
+}
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  margin: 10rpx;
+  border: 1px solid #22de9c;
+  border-radius: 5rpx;
+  background-color: transparent;
+  flex-basis: 100rpx;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+.shop-name {
+  color: #22de9c;
+  font-size: 28rpx;
+  margin-right: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.remove-btn {
+  color: #ffffff;
+  font-size: 24rpx;
+  padding: 5rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 .link-container {
   position: fixed;
