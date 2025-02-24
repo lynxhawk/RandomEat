@@ -18,7 +18,7 @@
         color="linear-gradient(to right, #003366, #663399, #ff66cc, #ff9933)"
         text="随机选择店铺/摇一摇"
         class="random-button"
-      ></u-button>
+    ></u-button>
     </view>
 
     <u-form class="form-row">
