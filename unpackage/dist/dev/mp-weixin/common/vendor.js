@@ -22685,9 +22685,9 @@ exports.default = _default;
 /* 212 */,
 /* 213 */,
 /* 214 */
-/*!**************************************************************************!*\
-  !*** C:/Work/RandomEat/uni_modules/uview-ui/components/u-input/props.js ***!
-  \**************************************************************************/
+/*!*****************************************************************************!*\
+  !*** C:/Work/RandomEat/uni_modules/uview-ui/components/u-textarea/props.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22700,55 +22700,15 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   props: {
-    // 输入的值
+    // 输入框的内容
     value: {
       type: [String, Number],
-      default: uni.$u.props.input.value
+      default: uni.$u.props.textarea.value
     },
-    // 输入框类型
-    // number-数字输入键盘，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数
-    // idcard-身份证输入键盘，微信、支付宝、百度、QQ小程序
-    // digit-带小数点的数字键盘，App的nvue页面、微信、支付宝、百度、头条、QQ小程序
-    // text-文本输入键盘
-    type: {
-      type: String,
-      default: uni.$u.props.input.type
-    },
-    // 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true，
-    // 兼容性：微信小程序、百度小程序、字节跳动小程序、QQ小程序
-    fixed: {
-      type: Boolean,
-      default: uni.$u.props.input.fixed
-    },
-    // 是否禁用输入框
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.input.disabled
-    },
-    // 禁用状态时的背景色
-    disabledColor: {
-      type: String,
-      default: uni.$u.props.input.disabledColor
-    },
-    // 是否显示清除控件
-    clearable: {
-      type: Boolean,
-      default: uni.$u.props.input.clearable
-    },
-    // 是否密码类型
-    password: {
-      type: Boolean,
-      default: uni.$u.props.input.password
-    },
-    // 最大输入长度，设置为 -1 的时候不限制最大长度
-    maxlength: {
-      type: [String, Number],
-      default: uni.$u.props.input.maxlength
-    },
-    // 	输入框为空时的占位符
+    // 输入框为空时占位符
     placeholder: {
-      type: String,
-      default: uni.$u.props.input.placeholder
+      type: [String, Number],
+      default: uni.$u.props.textarea.placeholder
     },
     // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
     placeholderClass: {
@@ -22760,123 +22720,95 @@ var _default = {
       type: [String, Object],
       default: uni.$u.props.input.placeholderStyle
     },
-    // 是否显示输入字数统计，只在 type ="text"或type ="textarea"时有效
-    showWordLimit: {
-      type: Boolean,
-      default: uni.$u.props.input.showWordLimit
+    // 输入框高度
+    height: {
+      type: [String, Number],
+      default: uni.$u.props.textarea.height
     },
-    // 设置右下角按钮的文字，有效值：send|search|next|go|done，兼容性详见uni-app文档
-    // https://uniapp.dcloud.io/component/input
-    // https://uniapp.dcloud.io/component/textarea
+    // 设置键盘右下角按钮的文字，仅微信小程序，App-vue和H5有效
     confirmType: {
       type: String,
-      default: uni.$u.props.input.confirmType
+      default: uni.$u.props.textarea.confirmType
     },
-    // 点击键盘右下角按钮时是否保持键盘不收起，H5无效
-    confirmHold: {
+    // 是否禁用
+    disabled: {
       type: Boolean,
-      default: uni.$u.props.input.confirmHold
+      default: uni.$u.props.textarea.disabled
     },
-    // focus时，点击页面的时候不收起键盘，微信小程序有效
-    holdKeyboard: {
+    // 是否显示统计字数
+    count: {
       type: Boolean,
-      default: uni.$u.props.input.holdKeyboard
+      default: uni.$u.props.textarea.count
     },
-    // 自动获取焦点
-    // 在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。nvue 页面不支持，需使用组件的 focus()、blur() 方法控制焦点
+    // 是否自动获取焦点，nvue不支持，H5取决于浏览器的实现
     focus: {
       type: Boolean,
-      default: uni.$u.props.input.focus
+      default: uni.$u.props.textarea.focus
     },
-    // 键盘收起时，是否自动失去焦点，目前仅App3.0.0+有效
-    autoBlur: {
+    // 是否自动增加高度
+    autoHeight: {
       type: Boolean,
-      default: uni.$u.props.input.autoBlur
+      default: uni.$u.props.textarea.autoHeight
     },
-    // 是否去掉 iOS 下的默认内边距，仅微信小程序，且type=textarea时有效
-    disableDefaultPadding: {
+    // 如果textarea是在一个position:fixed的区域，需要显示指定属性fixed为true
+    fixed: {
       type: Boolean,
-      default: uni.$u.props.input.disableDefaultPadding
+      default: uni.$u.props.textarea.fixed
     },
-    // 指定focus时光标的位置
+    // 指定光标与键盘的距离
+    cursorSpacing: {
+      type: Number,
+      default: uni.$u.props.textarea.cursorSpacing
+    },
+    // 指定focus时的光标位置
     cursor: {
       type: [String, Number],
-      default: uni.$u.props.input.cursor
+      default: uni.$u.props.textarea.cursor
     },
-    // 输入框聚焦时底部与键盘的距离
-    cursorSpacing: {
-      type: [String, Number],
-      default: uni.$u.props.input.cursorSpacing
+    // 是否显示键盘上方带有”完成“按钮那一栏，
+    showConfirmBar: {
+      type: Boolean,
+      default: uni.$u.props.textarea.showConfirmBar
     },
-    // 光标起始位置，自动聚集时有效，需与selection-end搭配使用
+    // 光标起始位置，自动聚焦时有效，需与selection-end搭配使用
     selectionStart: {
-      type: [String, Number],
-      default: uni.$u.props.input.selectionStart
+      type: Number,
+      default: uni.$u.props.textarea.selectionStart
     },
-    // 光标结束位置，自动聚集时有效，需与selection-start搭配使用
+    // 光标结束位置，自动聚焦时有效，需与selection-start搭配使用
     selectionEnd: {
-      type: [String, Number],
-      default: uni.$u.props.input.selectionEnd
+      type: Number,
+      default: uni.$u.props.textarea.selectionEnd
     },
     // 键盘弹起时，是否自动上推页面
     adjustPosition: {
       type: Boolean,
-      default: uni.$u.props.input.adjustPosition
+      default: uni.$u.props.textarea.adjustPosition
     },
-    // 输入框内容对齐方式，可选值为：left|center|right
-    inputAlign: {
-      type: String,
-      default: uni.$u.props.input.inputAlign
+    // 是否去掉 iOS 下的默认内边距，只微信小程序有效
+    disableDefaultPadding: {
+      type: Boolean,
+      default: uni.$u.props.textarea.disableDefaultPadding
     },
-    // 输入框字体的大小
-    fontSize: {
+    // focus时，点击页面的时候不收起键盘，只微信小程序有效
+    holdKeyboard: {
+      type: Boolean,
+      default: uni.$u.props.textarea.holdKeyboard
+    },
+    // 最大输入长度，设置为 -1 的时候不限制最大长度
+    maxlength: {
       type: [String, Number],
-      default: uni.$u.props.input.fontSize
+      default: uni.$u.props.textarea.maxlength
     },
-    // 输入框字体颜色
-    color: {
-      type: String,
-      default: uni.$u.props.input.color
-    },
-    // 输入框前置图标
-    prefixIcon: {
-      type: String,
-      default: uni.$u.props.input.prefixIcon
-    },
-    // 前置图标样式，对象或字符串
-    prefixIconStyle: {
-      type: [String, Object],
-      default: uni.$u.props.input.prefixIconStyle
-    },
-    // 输入框后置图标
-    suffixIcon: {
-      type: String,
-      default: uni.$u.props.input.suffixIcon
-    },
-    // 后置图标样式，对象或字符串
-    suffixIconStyle: {
-      type: [String, Object],
-      default: uni.$u.props.input.suffixIconStyle
-    },
-    // 边框类型，surround-四周边框，bottom-底部边框，none-无边框
+    // 边框类型，surround-四周边框，bottom-底部边框
     border: {
       type: String,
-      default: uni.$u.props.input.border
-    },
-    // 是否只读，与disabled不同之处在于disabled会置灰组件，而readonly则不会
-    readonly: {
-      type: Boolean,
-      default: uni.$u.props.input.readonly
-    },
-    // 输入框形状，circle-圆形，square-方形
-    shape: {
-      type: String,
-      default: uni.$u.props.input.shape
+      default: uni.$u.props.textarea.border
     },
     // 用于处理或者过滤输入框内容的方法
     formatter: {
       type: [Function, null],
-      default: uni.$u.props.input.formatter
+      default: uni.$u.props.textarea.formatter
     },
     // 是否忽略组件内对文本合成系统事件的处理
     ignoreCompositionEvent: {

@@ -112,8 +112,8 @@ try {
     uFormItem: function () {
       return Promise.all(/*! import() | uni_modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-form-item/u-form-item.vue */ 201))
     },
-    uInput: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-input/u-input */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-input/u-input")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-input/u-input.vue */ 209))
+    uTextarea: function () {
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-textarea/u-textarea */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-textarea/u-textarea")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-textarea/u-textarea.vue */ 209))
     },
     uLink: function () {
       return Promise.all(/*! import() | uni_modules/uview-ui/components/u-link/u-link */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-link/u-link")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-link/u-link.vue */ 217))
@@ -199,6 +199,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+//
+//
+//
 //
 //
 //
@@ -417,9 +420,53 @@ var _default = {
     },
     addShop: function addShop() {
       if (this.newShop) {
-        this.getCurrentShops().push(this.newShop);
+        // 分割输入文本，支持空格、换行、逗号等常见分隔符
+        var shopNames = this.newShop.split(/[\n\r,，、\s]+/) // 使用正则表达式匹配多种分隔符
+        .filter(function (name) {
+          return name.trim() !== "";
+        }); // 过滤空字符串
+
+        // 检查是否有有效输入
+        if (shopNames.length === 0) {
+          return;
+        }
+
+        // 获取当前分类的店铺列表
+        var currentShops = this.getCurrentShops();
+
+        // 批量添加店铺
+        var addedCount = 0;
+        shopNames.forEach(function (name) {
+          var trimmedName = name.trim();
+          if (trimmedName) {
+            // 可选：检查是否已存在相同名称的店铺
+            if (!currentShops.includes(trimmedName)) {
+              currentShops.push(trimmedName);
+              addedCount++;
+            }
+          }
+        });
+
+        // 清空输入框
         this.newShop = "";
+
+        // 保存到存储
         this.saveShops();
+
+        // 提示添加成功
+        if (addedCount > 0) {
+          uni.showToast({
+            title: "\u5DF2\u6DFB\u52A0".concat(addedCount, "\u4E2A\u5E97\u94FA"),
+            icon: "success",
+            duration: 1500
+          });
+        } else {
+          uni.showToast({
+            title: "店铺已存在",
+            icon: "none",
+            duration: 1500
+          });
+        }
       }
     },
     removeShop: function removeShop(index) {

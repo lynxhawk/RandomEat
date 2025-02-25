@@ -23,15 +23,18 @@
 
     <u-form class="form-row">
       <u-form-item>
-        <u-input
-          style="width: 70%"
+        <u-textarea
           v-model="newShop"
-          placeholder="请输入店铺名称"
+          placeholder="请输入店铺名称（多个店铺可用空格、换行分隔）"
           placeholderStyle="color: #22de9c"
           border="bottom"
+          :maxlength="-1"
           color="#22de9c"
           borderColor="#22de9c"
-        ></u-input>
+          style="width: 70%"
+          :autoHeight="true"
+          :maxHeight="120"
+        ></u-textarea>
       </u-form-item>
       <u-button
         text="添加店铺"
@@ -219,9 +222,52 @@ export default {
     },
     addShop() {
       if (this.newShop) {
-        this.getCurrentShops().push(this.newShop);
+        // 分割输入文本，支持空格、换行、逗号等常见分隔符
+        const shopNames = this.newShop
+          .split(/[\n\r,，、\s]+/) // 使用正则表达式匹配多种分隔符
+          .filter((name) => name.trim() !== ""); // 过滤空字符串
+
+        // 检查是否有有效输入
+        if (shopNames.length === 0) {
+          return;
+        }
+
+        // 获取当前分类的店铺列表
+        const currentShops = this.getCurrentShops();
+
+        // 批量添加店铺
+        let addedCount = 0;
+        shopNames.forEach((name) => {
+          const trimmedName = name.trim();
+          if (trimmedName) {
+            // 可选：检查是否已存在相同名称的店铺
+            if (!currentShops.includes(trimmedName)) {
+              currentShops.push(trimmedName);
+              addedCount++;
+            }
+          }
+        });
+
+        // 清空输入框
         this.newShop = "";
+
+        // 保存到存储
         this.saveShops();
+
+        // 提示添加成功
+        if (addedCount > 0) {
+          uni.showToast({
+            title: `已添加${addedCount}个店铺`,
+            icon: "success",
+            duration: 1500,
+          });
+        } else {
+          uni.showToast({
+            title: "店铺已存在",
+            icon: "none",
+            duration: 1500,
+          });
+        }
       }
     },
     removeShop(index) {
