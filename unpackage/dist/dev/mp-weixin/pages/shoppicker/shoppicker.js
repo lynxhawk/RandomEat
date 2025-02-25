@@ -463,7 +463,7 @@ var _default = {
         } else {
           uni.showToast({
             title: "店铺已存在",
-            icon: "none",
+            icon: "error",
             duration: 1500
           });
         }
