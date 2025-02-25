@@ -35,6 +35,16 @@
   flex: 1;
   margin-right: 10px;
 }
+.shop-textarea {
+  width: 90%;
+}
+
+/* 也可以尝试 >>> 选择器 (Vue 2) */
+.u-textarea textarea,
+.u-textarea .uni-textarea-textarea {
+  color: #22de9c !important;
+  caret-color: #22de9c !important;
+}
 .tabs {
   display: flex;
   justify-content: space-around;

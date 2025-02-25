@@ -24,14 +24,14 @@
     <u-form class="form-row">
       <u-form-item>
         <u-textarea
+          class="shop-textarea"
           v-model="newShop"
-          placeholder="请输入店铺名称（多个店铺可用空格、换行分隔）"
+          placeholder="多个店铺可用空格、换行分隔"
           placeholderStyle="color: #22de9c"
           border="bottom"
           :maxlength="-1"
-          color="#22de9c"
           borderColor="#22de9c"
-          style="width: 70%"
+          style="background-color: #372963;max-height: 120px; overflow-y: auto;"
           :autoHeight="true"
           :maxHeight="120"
         ></u-textarea>
@@ -384,6 +384,17 @@ export default {
 .form-row .u-form-item {
   flex: 1;
   margin-right: 10px;
+}
+
+.shop-textarea {
+  width: 90%;
+}
+
+/* 也可以尝试 >>> 选择器 (Vue 2) */
+.u-textarea >>> textarea,
+.u-textarea >>> .uni-textarea-textarea {
+  color: #22de9c !important;
+  caret-color: #22de9c !important;
 }
 
 .tabs {
