@@ -305,6 +305,9 @@ var _default = {
       this.shops = JSON.parse(shops);
     }
 
+    // 从文件系统加载数据
+    this.loadShopsFromFile();
+
     // 明确启用加速度计
     wx.startAccelerometer({
       interval: "game",
@@ -324,7 +327,7 @@ var _default = {
   onShow: function onShow() {
     // 在onShow里再次确保加速度计处于启用状态
     wx.startAccelerometer({
-      interval: 'game'
+      interval: "game"
     });
     wx.onAccelerometerChange(this.onAccelerometerChange);
   },
@@ -340,6 +343,38 @@ var _default = {
   },
   // 移除 watch 选项
   methods: {
+    // 从文件系统加载数据
+    loadShopsFromFile: function loadShopsFromFile() {
+      var fs = wx.getFileSystemManager();
+      // 获取用户文件目录路径
+      var filePath = "".concat(wx.env.USER_DATA_PATH, "/shops_data.json");
+      try {
+        // 尝试读取文件
+        var fileData = fs.readFileSync(filePath, "utf8");
+        console.log("从文件读取成功", fileData);
+        this.shops = JSON.parse(fileData);
+        // 同时更新缓存
+        uni.setStorageSync("shops", fileData);
+      } catch (error) {
+        console.log("文件不存在或读取失败", error);
+        // 如果文件不存在或读取失败，使用当前的数据
+      }
+    },
+    // 保存到文件系统
+    saveShopsToFile: function saveShopsToFile() {
+      var fs = wx.getFileSystemManager();
+      var filePath = "".concat(wx.env.USER_DATA_PATH, "/shops_data.json");
+      var fileData = JSON.stringify(this.shops);
+      try {
+        fs.writeFileSync(filePath, fileData, "utf8");
+        console.log("保存到文件成功");
+      } catch (error) {
+        console.error("保存到文件失败", error);
+      }
+
+      // 同时更新缓存
+      uni.setStorageSync("shops", fileData);
+    },
     getCurrentShops: function getCurrentShops() {
       return this.currentTab === 0 ? this.shops.food : this.shops.dessert;
     },
@@ -363,17 +398,17 @@ var _default = {
       var shakeThreshold = 10; // 从15降低到10
 
       if (currentTime - this.lastShakeTime > 1000 && delta > shakeThreshold) {
-        console.log('检测到摇动，delta:', delta);
+        console.log("检测到摇动，delta:", delta);
         this.lastShakeTime = currentTime;
         this.lastAcceleration = acceleration;
 
         // 震动反馈
         wx.vibrateShort({
           success: function success() {
-            console.log('震动成功');
+            console.log("震动成功");
           },
           fail: function fail(err) {
-            console.error('震动失败', err);
+            console.error("震动失败", err);
           }
         });
         this.pickShop();
@@ -446,8 +481,12 @@ var _default = {
         animate();
       }
     },
+    // 修改原来的保存方法
     saveShops: function saveShops() {
+      // 保存到缓存
       uni.setStorageSync("shops", JSON.stringify(this.shops));
+      // 同时保存到文件系统
+      this.saveShopsToFile();
     }
   }
 };

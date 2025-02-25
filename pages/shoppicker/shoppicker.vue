@@ -100,6 +100,9 @@ export default {
       this.shops = JSON.parse(shops);
     }
 
+    // 从文件系统加载数据
+    this.loadShopsFromFile();
+
     // 明确启用加速度计
     wx.startAccelerometer({
       interval: "game", // 使用游戏级别的更新频率
@@ -118,7 +121,7 @@ export default {
   onShow() {
     // 在onShow里再次确保加速度计处于启用状态
     wx.startAccelerometer({
-      interval: 'game'
+      interval: "game",
     });
     wx.onAccelerometerChange(this.onAccelerometerChange);
   },
@@ -127,13 +130,49 @@ export default {
     // 停止加速度计
     wx.stopAccelerometer();
   },
-   // 在组件销毁时确保清理资源
-   onUnload() {
+  // 在组件销毁时确保清理资源
+  onUnload() {
     wx.offAccelerometerChange(this.onAccelerometerChange);
     wx.stopAccelerometer();
   },
   // 移除 watch 选项
   methods: {
+    // 从文件系统加载数据
+    loadShopsFromFile() {
+      const fs = wx.getFileSystemManager();
+      // 获取用户文件目录路径
+      const filePath = `${wx.env.USER_DATA_PATH}/shops_data.json`;
+
+      try {
+        // 尝试读取文件
+        const fileData = fs.readFileSync(filePath, "utf8");
+        console.log("从文件读取成功", fileData);
+        this.shops = JSON.parse(fileData);
+        // 同时更新缓存
+        uni.setStorageSync("shops", fileData);
+      } catch (error) {
+        console.log("文件不存在或读取失败", error);
+        // 如果文件不存在或读取失败，使用当前的数据
+      }
+    },
+
+    // 保存到文件系统
+    saveShopsToFile() {
+      const fs = wx.getFileSystemManager();
+      const filePath = `${wx.env.USER_DATA_PATH}/shops_data.json`;
+      const fileData = JSON.stringify(this.shops);
+
+      try {
+        fs.writeFileSync(filePath, fileData, "utf8");
+        console.log("保存到文件成功");
+      } catch (error) {
+        console.error("保存到文件失败", error);
+      }
+
+      // 同时更新缓存
+      uni.setStorageSync("shops", fileData);
+    },
+
     getCurrentShops() {
       return this.currentTab === 0 ? this.shops.food : this.shops.dessert;
     },
@@ -146,34 +185,36 @@ export default {
     onAccelerometerChange(res) {
       // 调试日志，可在发布前删除
       // console.log('加速度数据:', res.x, res.y, res.z);
-      
+
       const currentTime = Date.now();
       // 计算加速度矢量的模
-      const acceleration = Math.sqrt(res.x * res.x + res.y * res.y + res.z * res.z);
+      const acceleration = Math.sqrt(
+        res.x * res.x + res.y * res.y + res.z * res.z
+      );
       const lastAcceleration = this.lastAcceleration || 0;
       const delta = Math.abs(acceleration - lastAcceleration);
-      
+
       // 调整阈值为较小的值
       const shakeThreshold = 10; // 从15降低到10
-      
+
       if (currentTime - this.lastShakeTime > 1000 && delta > shakeThreshold) {
-        console.log('检测到摇动，delta:', delta);
+        console.log("检测到摇动，delta:", delta);
         this.lastShakeTime = currentTime;
         this.lastAcceleration = acceleration;
-        
+
         // 震动反馈
         wx.vibrateShort({
           success: () => {
-            console.log('震动成功');
+            console.log("震动成功");
           },
           fail: (err) => {
-            console.error('震动失败', err);
-          }
+            console.error("震动失败", err);
+          },
         });
-        
+
         this.pickShop();
       }
-      
+
       this.lastAcceleration = acceleration;
     },
     addShop() {
@@ -244,8 +285,12 @@ export default {
         animate();
       }
     },
+    // 修改原来的保存方法
     saveShops() {
+      // 保存到缓存
       uni.setStorageSync("shops", JSON.stringify(this.shops));
+      // 同时保存到文件系统
+      this.saveShopsToFile();
     },
   },
 };
@@ -253,7 +298,7 @@ export default {
 
 <style>
 .container {
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
   background-color: #372963;
   min-height: 100vh;
   height: 100%;
@@ -269,7 +314,6 @@ export default {
 
 .result {
   text-align: center;
-  padding: 20px 0;
   font-size: 20px;
   height: 200px;
   flex: 1;
@@ -340,7 +384,7 @@ export default {
   background-color: transparent;
   flex-basis: 100rpx;
   box-sizing: border-box;
-  max-width: 100%;
+  max-width: 98%;
 }
 
 .shop-name {
