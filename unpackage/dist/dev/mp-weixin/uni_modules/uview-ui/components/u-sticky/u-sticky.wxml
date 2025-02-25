@@ -1,1 +1,0 @@
-<view style="{{$root.s0+virtualHostStyle}}" id="{{elId}}" class="{{['u-sticky','data-v-e18bd96e',virtualHostClass]}}"><view class="u-sticky__content data-v-e18bd96e" style="{{$root.s1}}"><slot></slot></view></view>

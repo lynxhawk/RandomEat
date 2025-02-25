@@ -101,22 +101,22 @@ var components
 try {
   components = {
     uDivider: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-divider/u-divider */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-divider/u-divider")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-divider/u-divider.vue */ 853))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-divider/u-divider */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-divider/u-divider")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-divider/u-divider.vue */ 174))
     },
     uButton: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-button/u-button.vue */ 861))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-button/u-button.vue */ 182))
     },
     uForm: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-form/u-form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-form/u-form")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-form/u-form.vue */ 871))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-form/u-form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-form/u-form")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-form/u-form.vue */ 192))
     },
     uFormItem: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-form-item/u-form-item.vue */ 880))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-form-item/u-form-item.vue */ 201))
     },
     uInput: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-input/u-input */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-input/u-input")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-input/u-input.vue */ 888))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-input/u-input */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-input/u-input")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-input/u-input.vue */ 209))
     },
     uLink: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-link/u-link */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-link/u-link")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-link/u-link.vue */ 928))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-link/u-link */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-link/u-link")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-link/u-link.vue */ 217))
     },
   }
 } catch (e) {
@@ -304,12 +304,39 @@ var _default = {
     if (shops) {
       this.shops = JSON.parse(shops);
     }
+
+    // 明确启用加速度计
+    wx.startAccelerometer({
+      interval: "game",
+      // 使用游戏级别的更新频率
+      success: function success() {
+        console.log("加速度计启用成功");
+      },
+      fail: function fail(err) {
+        console.error("加速度计启用失败", err);
+        uni.showToast({
+          title: "摇一摇功能启用失败",
+          icon: "none"
+        });
+      }
+    });
   },
   onShow: function onShow() {
+    // 在onShow里再次确保加速度计处于启用状态
+    wx.startAccelerometer({
+      interval: 'game'
+    });
     wx.onAccelerometerChange(this.onAccelerometerChange);
   },
   onHide: function onHide() {
     wx.offAccelerometerChange(this.onAccelerometerChange);
+    // 停止加速度计
+    wx.stopAccelerometer();
+  },
+  // 在组件销毁时确保清理资源
+  onUnload: function onUnload() {
+    wx.offAccelerometerChange(this.onAccelerometerChange);
+    wx.stopAccelerometer();
   },
   // 移除 watch 选项
   methods: {
@@ -323,11 +350,35 @@ var _default = {
       console.log(this.shops.dessert);
     },
     onAccelerometerChange: function onAccelerometerChange(res) {
+      // 调试日志，可在发布前删除
+      // console.log('加速度数据:', res.x, res.y, res.z);
+
       var currentTime = Date.now();
-      if (currentTime - this.lastShakeTime > 1000 && (Math.abs(res.x) > this.shakeThreshold || Math.abs(res.y) > this.shakeThreshold || Math.abs(res.z) > this.shakeThreshold)) {
+      // 计算加速度矢量的模
+      var acceleration = Math.sqrt(res.x * res.x + res.y * res.y + res.z * res.z);
+      var lastAcceleration = this.lastAcceleration || 0;
+      var delta = Math.abs(acceleration - lastAcceleration);
+
+      // 调整阈值为较小的值
+      var shakeThreshold = 10; // 从15降低到10
+
+      if (currentTime - this.lastShakeTime > 1000 && delta > shakeThreshold) {
+        console.log('检测到摇动，delta:', delta);
         this.lastShakeTime = currentTime;
+        this.lastAcceleration = acceleration;
+
+        // 震动反馈
+        wx.vibrateShort({
+          success: function success() {
+            console.log('震动成功');
+          },
+          fail: function fail(err) {
+            console.error('震动失败', err);
+          }
+        });
         this.pickShop();
       }
+      this.lastAcceleration = acceleration;
     },
     addShop: function addShop() {
       if (this.newShop) {
@@ -341,12 +392,58 @@ var _default = {
       currentShops.splice(index, 1);
       this.saveShops();
     },
+    // 修改 pickShop 方法，添加随机数字动画效果
     pickShop: function pickShop() {
+      var _this = this;
       var currentShops = this.getCurrentShops();
       if (currentShops.length > 0) {
-        var randomIndex = Math.floor(Math.random() * currentShops.length);
-        this.selectedShop = currentShops[randomIndex];
-        wx.vibrateShort();
+        // 先将选中店铺设为空
+        this.selectedShop = "";
+
+        // 获取最终结果的索引
+        var finalIndex = Math.floor(Math.random() * currentShops.length);
+        var finalResult = currentShops[finalIndex];
+
+        // 设置动画参数
+        var duration = 500; // 动画持续时间（毫秒）
+        var baseInterval = 20; // 初始数字变化间隔（毫秒）
+        var maxSlowdown = 40; // 最大减速幅度（毫秒）
+        var startTime = Date.now();
+        var animationCount = 0; // 记录动画执行次数
+
+        // 创建动画函数
+        var animate = function animate() {
+          // 计算已经过去的时间
+          var elapsedTime = Date.now() - startTime;
+          animationCount++;
+
+          // 如果动画时间未结束，继续随机变换
+          if (elapsedTime < duration) {
+            // 计算当前应该使用的间隔
+            // 使用更温和的减速公式
+            var progress = elapsedTime / duration; // 0到1之间的值
+            var currentInterval = baseInterval + progress * progress * maxSlowdown;
+
+            // 随机选择一个店铺显示
+            var randomIndex = Math.floor(Math.random() * currentShops.length);
+            _this.selectedShop = currentShops[randomIndex];
+
+            // 在控制台记录一下（调试用）
+            console.log("\u52A8\u753B\u7B2C".concat(animationCount, "\u5E27, \u95F4\u9694: ").concat(currentInterval.toFixed(2), "ms"));
+
+            // 继续下一帧动画
+            setTimeout(animate, currentInterval);
+          } else {
+            // 动画结束，显示最终结果
+            _this.selectedShop = finalResult;
+            console.log("\u52A8\u753B\u7ED3\u675F\uFF0C\u5171\u6267\u884C".concat(animationCount, "\u5E27"));
+            // 触发震动
+            wx.vibrateLong();
+          }
+        };
+
+        // 开始动画
+        animate();
       }
     },
     saveShops: function saveShops() {

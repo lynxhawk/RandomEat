@@ -1,1 +1,0 @@
-<view style="{{$root.s0+virtualHostStyle}}" class="{{['u-gap','data-v-b138c5b2',virtualHostClass]}}"></view>

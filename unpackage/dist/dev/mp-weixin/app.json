@@ -2,12 +2,12 @@
   "pages": [
     "pages/shoppicker/shoppicker"
   ],
+  "subPackages": [],
   "window": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "uView",
     "navigationBarBackgroundColor": "#372963",
     "backgroundColor": "#FFFFFF"
   },
-  "usingComponents": {},
-  "lazyCodeLoading": "requiredComponents"
+  "usingComponents": {}
 }

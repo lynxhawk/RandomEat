@@ -88,9 +88,8 @@
 }
 .remove-btn {
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 40rpx;
   padding: 5rpx;
-  border-radius: 50%;
   flex-shrink: 0;
 }
 .link-container {

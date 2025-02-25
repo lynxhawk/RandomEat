@@ -18,7 +18,7 @@
         color="linear-gradient(to right, #003366, #663399, #ff66cc, #ff9933)"
         text="随机选择店铺/摇一摇"
         class="random-button"
-    ></u-button>
+      ></u-button>
     </view>
 
     <u-form class="form-row">
@@ -99,12 +99,38 @@ export default {
     if (shops) {
       this.shops = JSON.parse(shops);
     }
+
+    // 明确启用加速度计
+    wx.startAccelerometer({
+      interval: "game", // 使用游戏级别的更新频率
+      success: () => {
+        console.log("加速度计启用成功");
+      },
+      fail: (err) => {
+        console.error("加速度计启用失败", err);
+        uni.showToast({
+          title: "摇一摇功能启用失败",
+          icon: "none",
+        });
+      },
+    });
   },
   onShow() {
+    // 在onShow里再次确保加速度计处于启用状态
+    wx.startAccelerometer({
+      interval: 'game'
+    });
     wx.onAccelerometerChange(this.onAccelerometerChange);
   },
   onHide() {
     wx.offAccelerometerChange(this.onAccelerometerChange);
+    // 停止加速度计
+    wx.stopAccelerometer();
+  },
+   // 在组件销毁时确保清理资源
+   onUnload() {
+    wx.offAccelerometerChange(this.onAccelerometerChange);
+    wx.stopAccelerometer();
   },
   // 移除 watch 选项
   methods: {
@@ -118,17 +144,37 @@ export default {
       console.log(this.shops.dessert);
     },
     onAccelerometerChange(res) {
+      // 调试日志，可在发布前删除
+      // console.log('加速度数据:', res.x, res.y, res.z);
+      
       const currentTime = Date.now();
-      if (
-        currentTime - this.lastShakeTime > 1000 &&
-        (Math.abs(res.x) > this.shakeThreshold ||
-          Math.abs(res.y) > this.shakeThreshold ||
-          Math.abs(res.z) > this.shakeThreshold)
-      ) {
+      // 计算加速度矢量的模
+      const acceleration = Math.sqrt(res.x * res.x + res.y * res.y + res.z * res.z);
+      const lastAcceleration = this.lastAcceleration || 0;
+      const delta = Math.abs(acceleration - lastAcceleration);
+      
+      // 调整阈值为较小的值
+      const shakeThreshold = 10; // 从15降低到10
+      
+      if (currentTime - this.lastShakeTime > 1000 && delta > shakeThreshold) {
+        console.log('检测到摇动，delta:', delta);
         this.lastShakeTime = currentTime;
-
+        this.lastAcceleration = acceleration;
+        
+        // 震动反馈
+        wx.vibrateShort({
+          success: () => {
+            console.log('震动成功');
+          },
+          fail: (err) => {
+            console.error('震动失败', err);
+          }
+        });
+        
         this.pickShop();
       }
+      
+      this.lastAcceleration = acceleration;
     },
     addShop() {
       if (this.newShop) {
@@ -142,12 +188,60 @@ export default {
       currentShops.splice(index, 1);
       this.saveShops();
     },
+    // 修改 pickShop 方法，添加随机数字动画效果
     pickShop() {
       const currentShops = this.getCurrentShops();
       if (currentShops.length > 0) {
-        let randomIndex = Math.floor(Math.random() * currentShops.length);
-        this.selectedShop = currentShops[randomIndex];
-        wx.vibrateShort();
+        // 先将选中店铺设为空
+        this.selectedShop = "";
+
+        // 获取最终结果的索引
+        const finalIndex = Math.floor(Math.random() * currentShops.length);
+        const finalResult = currentShops[finalIndex];
+
+        // 设置动画参数
+        const duration = 500; // 动画持续时间（毫秒）
+        const baseInterval = 20; // 初始数字变化间隔（毫秒）
+        const maxSlowdown = 40; // 最大减速幅度（毫秒）
+        const startTime = Date.now();
+        let animationCount = 0; // 记录动画执行次数
+
+        // 创建动画函数
+        const animate = () => {
+          // 计算已经过去的时间
+          const elapsedTime = Date.now() - startTime;
+          animationCount++;
+
+          // 如果动画时间未结束，继续随机变换
+          if (elapsedTime < duration) {
+            // 计算当前应该使用的间隔
+            // 使用更温和的减速公式
+            const progress = elapsedTime / duration; // 0到1之间的值
+            const currentInterval =
+              baseInterval + progress * progress * maxSlowdown;
+
+            // 随机选择一个店铺显示
+            const randomIndex = Math.floor(Math.random() * currentShops.length);
+            this.selectedShop = currentShops[randomIndex];
+
+            // 在控制台记录一下（调试用）
+            console.log(
+              `动画第${animationCount}帧, 间隔: ${currentInterval.toFixed(2)}ms`
+            );
+
+            // 继续下一帧动画
+            setTimeout(animate, currentInterval);
+          } else {
+            // 动画结束，显示最终结果
+            this.selectedShop = finalResult;
+            console.log(`动画结束，共执行${animationCount}帧`);
+            // 触发震动
+            wx.vibrateLong();
+          }
+        };
+
+        // 开始动画
+        animate();
       }
     },
     saveShops() {
@@ -260,9 +354,8 @@ export default {
 
 .remove-btn {
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 40rpx;
   padding: 5rpx;
-  border-radius: 50%;
   flex-shrink: 0;
 }
 

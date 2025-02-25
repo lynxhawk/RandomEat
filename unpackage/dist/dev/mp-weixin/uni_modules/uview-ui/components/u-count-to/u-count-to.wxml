@@ -1,1 +1,0 @@
-<text style="{{'font-size:'+($root.g0)+';'+('font-weight:'+(bold?'bold':'normal')+';')+('color:'+(color)+';')+virtualHostStyle}}" class="{{['u-count-num','data-v-b036c66e',virtualHostClass]}}">{{displayValue}}</text>

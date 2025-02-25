@@ -1,1 +1,0 @@
-<view class="{{['u-steps','data-v-387c9f09','u-steps--'+direction,virtualHostClass]}}" style="{{virtualHostStyle}}"><slot></slot></view>
