@@ -114,10 +114,10 @@ export default {
       },
       fail: (err) => {
         console.error("加速度计启用失败", err);
-        uni.showToast({
-          title: "摇一摇功能启用失败",
-          icon: "none",
-        });
+        // uni.showToast({
+        //   title: "摇一摇功能启用失败",
+        //   icon: "none",
+        // });
       },
     });
   },
