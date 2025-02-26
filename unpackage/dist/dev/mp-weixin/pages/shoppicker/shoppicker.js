@@ -297,7 +297,7 @@ var _default = {
       },
       newShop: "",
       selectedShop: "",
-      shakeThreshold: 15,
+      shakeThreshold: 1.5,
       // 摇一摇阈值,可根据需要调整
       lastShakeTime: 0 // 上次摇一摇的时间戳
     };
@@ -312,7 +312,7 @@ var _default = {
     this.loadShopsFromFile();
 
     // 明确启用加速度计
-    wx.startAccelerometer({
+    uni.startAccelerometer({
       interval: "game",
       // 使用游戏级别的更新频率
       success: function success() {
@@ -329,20 +329,20 @@ var _default = {
   },
   onShow: function onShow() {
     // 在onShow里再次确保加速度计处于启用状态
-    wx.startAccelerometer({
+    uni.startAccelerometer({
       interval: "game"
     });
-    wx.onAccelerometerChange(this.onAccelerometerChange);
+    uni.onAccelerometerChange(this.onAccelerometerChange);
   },
   onHide: function onHide() {
-    wx.offAccelerometerChange(this.onAccelerometerChange);
+    uni.offAccelerometerChange(this.onAccelerometerChange);
     // 停止加速度计
-    wx.stopAccelerometer();
+    uni.stopAccelerometer();
   },
   // 在组件销毁时确保清理资源
   onUnload: function onUnload() {
-    wx.offAccelerometerChange(this.onAccelerometerChange);
-    wx.stopAccelerometer();
+    uni.offAccelerometerChange(this.onAccelerometerChange);
+    uni.stopAccelerometer();
   },
   // 移除 watch 选项
   methods: {
@@ -387,26 +387,36 @@ var _default = {
       console.log(this.shops.food);
       console.log(this.shops.dessert);
     },
+    // 修改后的加速度计变化处理函数
     onAccelerometerChange: function onAccelerometerChange(res) {
-      // 调试日志，可在发布前删除
-      // console.log('加速度数据:', res.x, res.y, res.z);
+      // 为调试添加日志，发布前可删除
+      //console.log("加速度数据:", res.x, res.y, res.z);
 
       var currentTime = Date.now();
+
       // 计算加速度矢量的模
       var acceleration = Math.sqrt(res.x * res.x + res.y * res.y + res.z * res.z);
-      var lastAcceleration = this.lastAcceleration || 0;
-      var delta = Math.abs(acceleration - lastAcceleration);
 
-      // 调整阈值为较小的值
-      var shakeThreshold = 10; // 从15降低到10
+      // 确保 lastAcceleration 存在
+      if (typeof this.lastAcceleration === "undefined") {
+        this.lastAcceleration = acceleration;
+        return;
+      }
+      var delta = Math.abs(acceleration - this.lastAcceleration);
 
-      if (currentTime - this.lastShakeTime > 1000 && delta > shakeThreshold) {
+      // 降低阈值使其更容易触发
+      var shakeThreshold = 1.5; // 从原来的10/15降低到5
+
+      // 添加调试信息
+      //console.log("加速度变化:", delta, "阈值:", shakeThreshold);
+
+      // 确保两次摇动之间至少间隔800毫秒
+      if (currentTime - (this.lastShakeTime || 0) > 800 && delta > shakeThreshold) {
         console.log("检测到摇动，delta:", delta);
         this.lastShakeTime = currentTime;
-        this.lastAcceleration = acceleration;
 
         // 震动反馈
-        wx.vibrateShort({
+        uni.vibrateShort({
           success: function success() {
             console.log("震动成功");
           },
@@ -414,6 +424,8 @@ var _default = {
             console.error("震动失败", err);
           }
         });
+
+        // 触发店铺选择
         this.pickShop();
       }
       this.lastAcceleration = acceleration;
@@ -511,7 +523,9 @@ var _default = {
             _this.selectedShop = currentShops[randomIndex];
 
             // 在控制台记录一下（调试用）
-            console.log("\u52A8\u753B\u7B2C".concat(animationCount, "\u5E27, \u95F4\u9694: ").concat(currentInterval.toFixed(2), "ms"));
+            // console.log(
+            //   `动画第${animationCount}帧, 间隔: ${currentInterval.toFixed(2)}ms`
+            // );
 
             // 继续下一帧动画
             setTimeout(animate, currentInterval);
